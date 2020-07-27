@@ -1,4 +1,4 @@
-import cv2
+from PIL import Image
 import numpy as np
 import gzip
 import time
@@ -7,7 +7,7 @@ fn=input("输入文件名>>>")
 print("解码中。。。")
 t0=time.time()
 
-pic=cv2.imread(fn,-1)
+pic=np.array(Image.open(fn))
 
 def main():
     content_=[]

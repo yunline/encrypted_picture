@@ -1,4 +1,4 @@
-import cv2
+from PIL import Image
 import numpy as np
 import os
 import math
@@ -38,4 +38,4 @@ with open(fn,"rb") as f:
                 else:
                     raise Exception("出大问题了QAQ")
         pic[ln][col][rgba]=b
-    cv2.imwrite("result.png",pic)
+    Image.fromarray(pic.astype('uint8')).save("result.png")
