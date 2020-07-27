@@ -10,10 +10,10 @@ t0=time.time()
 pic=cv2.imread(fn,-1)
 
 def main():
-    content_=b""
+    content_=[]
     for n in np.nditer(pic):
-        content_+=n.tobytes()
-    return content_
+        content_.append(n.tobytes())
+    return b''.join(content_)
 
 content=main()
 print(time.time()-t0)
