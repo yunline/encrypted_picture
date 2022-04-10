@@ -1,28 +1,25 @@
 from PIL import Image
 import numpy as np
 import gzip
-import time
 
-fn=input("输入文件名>>>")
+Image.MAX_IMAGE_PIXELS=None #解除像素数上限以读取大图片
+
+input_file_name=input("输入文件>>>")
+output_directory=(lambda s:"./" if not s else s)(input("输出目录（不填默认当前目录）>>"))
 print("解码中。。。")
-t0=time.time()
 
-pic=np.array(Image.open(fn))
+pic=np.array(Image.open(input_file_name))
+content=pic.tobytes()
+del pic
 
-def main():
-    content_=[]
-    for n in np.nditer(pic):
-        content_.append(n.tobytes())
-    return b''.join(content_)
+size_bytes_length=48
+filename_length=48
+main_content_addr=size_bytes_length+filename_length
 
-content=main()
-print(time.time()-t0)
+output_file_name="_"+content[size_bytes_length:main_content_addr].decode().replace("\x00","")
 
-szzz=48
-fnlll=48
-length=int.from_bytes(content[:szzz+fnlll],"big")
-final=content[szzz+fnlll:szzz+fnlll+length]
-fn="_"+content[szzz:szzz+fnlll].decode().replace("\x00","")
+length=int.from_bytes(content[:main_content_addr],"big")
+main_content=content[main_content_addr:main_content_addr+length]
 
-with open(fn,"wb") as ffff:
-    ffff.write(gzip.decompress(final))
+with open(output_directory+output_file_name,"wb") as f:
+    f.write(gzip.decompress(main_content))
